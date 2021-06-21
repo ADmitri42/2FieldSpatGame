@@ -28,6 +28,7 @@ public:
   std::vector<double> get_bs();
   std::vector<double> get_koef();
   void set_b(double new_b1, double new_b2);
+  void set_koef(double new_lam, double new_mu);
   void set_field(const std::vector<int> &new_field1,
                  const std::vector<int> &new_field2);
   std::vector<double> get_persistences();

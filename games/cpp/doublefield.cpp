@@ -37,6 +37,11 @@ void DoubleMeanFieldGame::set_b(double new_b1, double new_b2) {
   b2 = new_b2;
 }
 
+void DoubleMeanFieldGame::set_koef(double new_lam, double new_mu){
+  lam = new_lam;
+  mu = new_mu;
+}
+
 /*
  * Set new fields
  * (statistic would be reset)

@@ -1,11 +1,11 @@
 import numpy as np
 import pytest
-from spatgames import DoubleMeanFieldGamePy
+from spatgames import TwoFieldSpatialGame
 
 
 @pytest.fixture(scope="module")
 def double_mean_game():
-    game = DoubleMeanFieldGamePy(20, 1.4, 1.4)
+    game = TwoFieldSpatialGame(20, 1.4, 1.4, 0, 1)
     return game
 
 
@@ -133,6 +133,13 @@ def test_set_get_b(double_mean_game):
     bs = double_mean_game.b
     double_mean_game.b = (1.4, 1.4)
     assert (bs[0] == 1.6) and (bs[1] == 1.6)
+
+
+def test_set_get_koef(double_mean_game):
+    double_mean_game.koef = (2, 3)
+    koef = double_mean_game.koef
+    double_mean_game.koef = (0, 1)
+    assert koef == (2, 3)
 
 
 def test_evolve(double_mean_game, field, evolved_field):

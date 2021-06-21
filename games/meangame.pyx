@@ -76,13 +76,13 @@ cdef class MeanGamePy:
 
 
 
-cdef class DoubleMeanFieldGamePy:
+cdef class TwoFieldSpatialGame:
     cdef:
         DoubleMeanFieldGame *c_game;
         cdef int _L, percfrom, perctill
 
-    def __cinit__(self, int L, double b1, double b2, int percfrom=-1, perctill=-1):
-        self.c_game = new DoubleMeanFieldGame(L, b1, b2, 0, 1)
+    def __cinit__(self, int L, double b1, double b2, double lam, double mu, int percfrom=-1, perctill=-1):
+        self.c_game = new DoubleMeanFieldGame(L, b1, b2, lam, mu)
         self._L = L
         self.percfrom = percfrom;
         self.perctill = perctill;
@@ -142,6 +142,22 @@ cdef class DoubleMeanFieldGamePy:
         if arr.size != 2:
             raise ValueError(f"Size mismatch: expected 2 values, got {arr.size}.")
         self.c_game.set_b(arr[0], arr[1])
+
+    @property
+    def koef(self):
+        cdef vector[double] koef = self.c_game.get_koef()
+        lam = koef[0]
+        mu = koef[1]
+        return (lam, mu)
+
+    @koef.setter
+    def koef(self, arr):
+        arr = np.asarray(arr)
+        if len(arr.shape) != 1:
+            raise ValueError("Expected a 1D array, got %s-d." % len(arr.shape))
+        if arr.size != 2:
+            raise ValueError(f"Size mismatch: expected 2 values, got {arr.size}.")
+        self.c_game.set_koef(arr[0], arr[1])
 
     @property
     def densities(self):
