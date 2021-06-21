@@ -5,16 +5,16 @@ cimport cython
 from libcpp.vector cimport vector
 from numpy cimport import_array, PyArray_SimpleNewFromData, NPY_UINT8, NPY_UINT32, NPY_INT32, npy_intp, NPY_DOUBLE
 
-from CGames cimport DoubleMeanFieldGame
+from CGames cimport AbstractSpatialGame
 
-
+#DoubleMeanFieldGame
 cdef class TwoFieldSpatialGame:
     cdef:
-        DoubleMeanFieldGame *c_game;
+        AbstractSpatialGame *c_game;
         cdef int _L, percfrom, perctill
 
     def __cinit__(self, int L, double b1, double b2, double lam, double mu, int percfrom=-1, perctill=-1):
-        self.c_game = new DoubleMeanFieldGame(L, b1, b2, lam, mu)
+        self.c_game = new AbstractSpatialGame(L, b1, b2, lam, mu)
         self._L = L
         self.percfrom = percfrom;
         self.perctill = perctill;

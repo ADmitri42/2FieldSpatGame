@@ -16,12 +16,12 @@ protected:
   std::vector<double> densities;
 
   size_t L;
-  double b;
+  double b1, b2, lam, mu;
   int perCalFrom;
   int perCalTill;
 
 public:
-  AbstractSpatialGame(size_t size, double _b = 1.8);
+  AbstractSpatialGame(size_t size, double _b1 = 1.6, double _b2 = 1.6, double _lam=0, double _mu=1);
   virtual ~AbstractSpatialGame(){};
 
   virtual void calculate_scores(std::vector<double> &scores);
@@ -31,11 +31,14 @@ public:
 
   std::vector<double> get_densities();
   size_t size();
-  virtual double get_b();
-  void set_b(double new_b);
+  virtual std::vector<double> get_bs();
+  virtual std::vector<double> get_koef();
+  void set_b(double new_b1, double new_b2);
+  void set_koef(double new_lam, double new_mu);
   std::vector<int> get_field();
-  void set_field(const std::vector<int> &new_field);
-  double get_persistence();
+  void set_field(const std::vector<int> &new_field1,
+                 const std::vector<int> &new_field2);
+  std::vector<double> get_persistences();
   /*
    * Function to create numpy array
    */
