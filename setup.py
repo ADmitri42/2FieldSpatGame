@@ -20,8 +20,6 @@ setup(
             "spatgames",
             [
                 "./games/meangame.pyx",
-                "./games/cpp/games.cpp",
-                "./games/cpp/utilities.cpp",
                 "./games/cpp/spatgame.cpp",
                 "./games/cpp/doublefield.cpp",
             ],

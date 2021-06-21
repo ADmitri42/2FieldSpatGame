@@ -15,18 +15,6 @@ cdef extern from "cpp/games.h":
         double get_persistence();
         char* get_field_pointer();
         double* get_densities_pointer();
-        
-    cdef cppclass NovakMayGame(AbstractSpatialGame):
-        NovakMayGame(int, double)
-
-    cdef cppclass MeanGame(AbstractSpatialGame):
-        MeanGame(int, double)
-
-    cdef cppclass NovakMayTriangularGame(AbstractSpatialGame):
-        NovakMayTriangularGame(int, double)
-
-    cdef cppclass MeanTriangularGame(AbstractSpatialGame):
-        MeanTriangularGame(int, double)
 
     cdef cppclass DoubleMeanFieldGame(AbstractSpatialGame):
         DoubleMeanFieldGame(int, double, double, double, double);
