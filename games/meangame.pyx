@@ -150,21 +150,4 @@ def _make_rgb(long[:, :] field):
 def color_field_change(oldfield, newfield):
     return _make_rgb(newfield + 2*(newfield-oldfield))
 
-@cython.cdivision(True)
-@cython.boundscheck(False)
-def _make_rgb_flat(long[:] field):
-    cdef:
-        int L = field.shape[0]
-        double[:, :] new_field = np.zeros((L,  3), dtype=float)
-
-    for i in range(L):
-        for t in range(3):
-            new_field[i, t] = colors_f[field[i]+2][t]
-
-    return np.asarray(new_field)
-
-
-def color_field_change_flat(oldfield, newfield):
-    return _make_rgb_flat(newfield + 2*(newfield-oldfield))
-
 import_array()
