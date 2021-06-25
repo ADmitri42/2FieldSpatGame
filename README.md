@@ -1,5 +1,5 @@
 # 2FieldSpatGame
-
+[![DOI](https://zenodo.org/badge/378931215.svg)](https://zenodo.org/badge/latestdoi/378931215)
 This repository containts generalization of the code used in our [research](https://github.com/ADmitri42/spatial-evolutionary-game)
 ## spatial-evolutionary-game
 
