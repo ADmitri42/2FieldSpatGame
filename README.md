@@ -1,6 +1,7 @@
 # 2FieldSpatGame
 
-# spatial-evolutionary-game
+This repository containts generalization of the code used in our [research](https://github.com/ADmitri42/spatial-evolutionary-game)
+## spatial-evolutionary-game
 
 In this game $2L^2$ individual "*players*" placed in a two two-dimensional spatial array.
 
