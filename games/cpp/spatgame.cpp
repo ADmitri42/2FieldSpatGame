@@ -110,26 +110,28 @@ void AbstractSpatialGame::calculate_scores(std::vector<double> &scores) {
         offset = L * L * off;
         density = densities[densities.size() - 1 - off];
         densitycur = densities[densities.size() - 2 + off];
+
+        #pragma omp parallel for
         for (size_t k = 0; k < L * L; k++) {
-        int y = k / L; // Row
-        int x = k % L; // Col
+          int y = k / L; // Row
+          int x = k % L; // Col
 
-        for (int i = -1; i <= 1; i++) // Row
-        {
-            for (int j = -1; j <= 1; j++) // Col
-            {
-            size_t memberIndex = (x + i + L) % L + L * ((y + j + L) % L);
-            if ((i == 0) && (j == 0)) {
-                scores[offset + k] += lam * densitycur + mu * density;
-            } else {
-                scores[offset + k] += field[offset + memberIndex]; // == 0 ? 1 : 0;
-            }
-            }
-        }
+          for (int i = -1; i <= 1; i++) // Row
+          {
+              for (int j = -1; j <= 1; j++) // Col
+              {
+              size_t memberIndex = (x + i + L) % L + L * ((y + j + L) % L);
+              if ((i == 0) && (j == 0)) {
+                  scores[offset + k] += lam * densitycur + mu * density;
+              } else {
+                  scores[offset + k] += field[offset + memberIndex]; // == 0 ? 1 : 0;
+              }
+              }
+          }
 
-        if (field[offset + k] == 0) {
-            scores[offset + k] = scores[offset + k] * (b1 * (1 - off) + b2 * off);
-        }
+          if (field[offset + k] == 0) {
+              scores[offset + k] = scores[offset + k] * (b1 * (1 - off) + b2 * off);
+          }
         }
     }
 }
@@ -144,6 +146,8 @@ void AbstractSpatialGame::update_field(const std::vector<double> &scores,
   int offset = 0;
   for (int off = 0; off < 2; ++off) {
     offset = L * L * off;
+
+    #pragma omp parallel for
     for (size_t k = 0; k < L * L; k++) {
       int y = k / L; // Row
       int x = k % L; // Col

@@ -7,7 +7,6 @@ from numpy cimport import_array, PyArray_SimpleNewFromData, NPY_UINT8, NPY_UINT3
 
 from CGames cimport AbstractSpatialGame
 
-#DoubleMeanFieldGame
 cdef class TwoFieldSpatialGame:
     cdef:
         AbstractSpatialGame *c_game;
