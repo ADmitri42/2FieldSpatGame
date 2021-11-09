@@ -1,0 +1,24 @@
+{
+  "parameters": {
+    "b1": [0.9, 1.5, 1.9],
+    "b2": [0.9, 1.5, 1.9],
+    "lam": 0,
+    "mu": 1
+  },
+  "measures": {
+    "tsteps": 10000,
+    "persistence": {
+      "start": 15000,
+      "end": 16000
+    }
+  },
+  "results": {
+    "dir": "./data",
+    "name": "TwoFieldMeasures"
+  },
+  "fields": {
+    "size": 100,
+    "dir": "./fields",
+    "quantity": 4
+  }
+}
