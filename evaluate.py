@@ -27,7 +27,7 @@ args = parser.parse_args()
 config, path_to_results = configure_workflow(args.config, args.overwrite)
 
 
-bs = list(product(config["parameters"]["b1"], config["parameters"]["b1"]))
+bs = list(product(config["parameters"]["b1"], config["parameters"]["b2"]))
 persistence_shape = (len(bs), config["fields"]["quantity"], 2)
 density_shape = (
     len(bs),
