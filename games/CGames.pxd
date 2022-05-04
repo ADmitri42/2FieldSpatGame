@@ -14,6 +14,7 @@ cdef extern from "cpp/spatgame.h":
         vector[double] get_bs();
         vector[double] get_koef();
         vector[double] get_persistences();
+        vector[int] mn_distribution();
 
         double get_persistence();
         char* get_field_pointer();

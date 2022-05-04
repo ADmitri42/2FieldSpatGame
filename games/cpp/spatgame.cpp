@@ -203,6 +203,62 @@ void AbstractSpatialGame::evolve(int num_steps, int perCalFrom,
   scores.clear();
 }
 
+std::vector<int> AbstractSpatialGame::mn_distribution(){
+    std::vector<double> score(L*L, 0);
+    calculate_scores(score);
+    std::vector<int> nmdistr(2*9*9, 0);
+    int offset, moffset, m, n, is, x1, x2, x3, y1, y2, y3;
+    double n_sc, m_sc;
+
+    #pragma omp parallel for
+      for (int off = 0; off < 2; ++off) {
+      offset = L * L * off;
+      moffset = 81 * off;
+      for(size_t x = 0; x < L; ++x){
+          for (size_t y = 0; y < L; ++y) {
+              n = m = -1;
+              n_sc = m_sc = -22;
+              for (int i = -1; i < 2; ++i) {
+                  for (int j = -1; j < 2; ++j) {
+                      is = ((L+y+j)%L)*L+(L + x+i)%L;
+
+                      // Neigbours coordinates
+                      x1 = (L+x+i-1)%L;
+                      x2 = (L+x+i)%L;
+                      x3 = (L+x+i+1)%L;
+
+                      y1 = (L+y+j-1)%L;
+                      y2 = (L+y+j)%L;
+                      y3 = (L+y+j+1)%L;
+
+                      if((field[offset + is] == 0)&&(score[offset + is] > n_sc)){
+                          n = field[offset + y1*L + x1] + field[offset + y1*L + x2] + field[offset + y1*L + x3]
+                                  + field[offset + y2*L + x1] +  field[offset + y2*L + x3]
+                                  + field[offset + y3*L + x1] + field[offset + y3*L + x2] + field[offset + y3*L + x3];
+
+                          n_sc = score[offset + is];
+                      }
+
+                      if((field[offset + is] == 1)&&(score[offset + is] > m_sc)){
+                          m = field[offset + y1*L + x1] + field[offset + y1*L + x2] + field[offset + y1*L + x3]
+                              + field[offset + y2*L + x1] +  field[offset + y2*L + x3]
+                              + field[offset + y3*L + x1] + field[offset + y3*L + x2] + field[offset + y3*L + x3];
+
+                          m_sc = score[offset + is];
+                      }
+                  }
+              }
+
+              if((m >= 0)&&(n >= 0)){
+                  nmdistr[moffset + m*9 + n] += 1;
+              }
+  //            std::cout << n << " " << m << std::endl;
+          }
+      }
+    }
+    return nmdistr;
+}
+
 /*
  * Methods that simplify NumPy Array creation
  */

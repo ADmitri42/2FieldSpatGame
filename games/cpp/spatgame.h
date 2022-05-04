@@ -39,6 +39,8 @@ public:
   void set_field(const std::vector<int> &new_field1,
                  const std::vector<int> &new_field2);
   std::vector<double> get_persistences();
+
+  std::vector<int> mn_distribution();
   /*
    * Function to create numpy array
    */

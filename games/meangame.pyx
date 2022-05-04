@@ -106,6 +106,17 @@ cdef class TwoFieldSpatialGame:
         per2 = per[1]
         return (per1, per2)
 
+    def mn_distribution(self):
+        cdef vector[int] result = self.c_game.mn_distribution()
+        cdef int x, y
+
+        nmdist = np.zeros((2, 9, 9), dtype="int")
+        for off in range(2):
+            for x in range(9):
+                for y in range(9):
+                    nmdist[off, y, x] = result[off * 81 + y * 9 + x]
+        return nmdist
+
     def evolve(self, int num_steps = 1):
         self.c_game.evolve(num_steps, self.percfrom, self.perctill)
 
