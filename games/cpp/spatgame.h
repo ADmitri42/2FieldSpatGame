@@ -7,6 +7,7 @@
 
 #include <sys/types.h>
 #include <vector>
+#include <random>
 
 class AbstractSpatialGame {
 protected:
@@ -16,12 +17,16 @@ protected:
   std::vector<double> densities;
 
   size_t L;
-  double b1, b2, lam, mu;
+  double b1, b2, lam, mu, K;
   int perCalFrom;
   int perCalTill;
+  std::mt19937 rnd_engine;
+	std::uniform_real_distribution<double> distribution;
+
+  double random();
 
 public:
-  AbstractSpatialGame(size_t size, double _b1 = 1.6, double _b2 = 1.6, double _lam=0, double _mu=1);
+  AbstractSpatialGame(size_t size, double _b1 = 1.6, double _b2 = 1.6, double _lam=0, double _mu=1, double _k=0, int default_seed=42);
   virtual ~AbstractSpatialGame(){};
 
   virtual void calculate_scores(std::vector<double> &scores);
@@ -33,8 +38,10 @@ public:
   size_t size();
   virtual std::vector<double> get_bs();
   virtual std::vector<double> get_koef();
+  virtual double get_K();
   void set_b(double new_b1, double new_b2);
   void set_koef(double new_lam, double new_mu);
+  void set_K(double new_k);
   std::vector<int> get_field();
   void set_field(const std::vector<int> &new_field1,
                  const std::vector<int> &new_field2);

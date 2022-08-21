@@ -5,7 +5,7 @@ from spatgames import TwoFieldSpatialGame
 
 @pytest.fixture(scope="module")
 def double_mean_game():
-    game = TwoFieldSpatialGame(20, 1.4, 1.4, 0, 1)
+    game = TwoFieldSpatialGame(20, 1.4, 1.4, 0, 1, 0, 42)
     return game
 
 

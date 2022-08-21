@@ -6,7 +6,7 @@ from spatgames import TwoFieldSpatialGame
 
 @pytest.fixture(scope="module")
 def mean_game():
-    game = TwoFieldSpatialGame(20, 1.4, 1.4, 1, 0)
+    game = TwoFieldSpatialGame(20, 1.4, 1.4, 1, 0, 0, 42)
     return game
 
 

@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <numeric>
+#include <random>
 
 
 /*
@@ -10,7 +11,7 @@
  * size - length of field
  * _b - initial payoff parameter
  */
-AbstractSpatialGame::AbstractSpatialGame(size_t size, double _b1, double _b2, double _lam, double _mu){
+AbstractSpatialGame::AbstractSpatialGame(size_t size, double _b1, double _b2, double _lam, double _mu, double _k, int default_seed){
     L = size;
     field.assign(2 * L * L, 0);
     unchanged.assign(2 * L * L, 1);
@@ -19,6 +20,16 @@ AbstractSpatialGame::AbstractSpatialGame(size_t size, double _b1, double _b2, do
     b2 = _b2;
     lam = _lam;
     mu = _mu;
+    K = _k;
+    std::mt19937 rnd_engine (default_seed);
+	  std::uniform_real_distribution<double> distribution(0.0, 1.0);
+}
+
+/*
+ * Generate uniformaly value from [0;1]
+ */
+double AbstractSpatialGame::random() {
+    return distribution(rnd_engine);
 }
 
 /*
@@ -39,6 +50,8 @@ std::vector<double> AbstractSpatialGame::get_bs() { return {b1, b2}; }
 
 std::vector<double> AbstractSpatialGame::get_koef() { return {lam, mu}; }
 
+double AbstractSpatialGame::get_K() { return K; }
+
 /*
  * Set new payoff parameter
  * (doesn't reset the statistic)
@@ -51,6 +64,13 @@ void AbstractSpatialGame::set_b(double new_b1, double new_b2) {
 void AbstractSpatialGame::set_koef(double new_lam, double new_mu){
   lam = new_lam;
   mu = new_mu;
+}
+
+/*
+ * Set measure of stochastic uncertainties (noise) K
+ */
+void AbstractSpatialGame::set_K(double new_k) {
+  K = new_k;
 }
 
 std::vector<int> AbstractSpatialGame::get_field(){
@@ -112,9 +132,9 @@ void AbstractSpatialGame::calculate_scores(std::vector<double> &scores) {
         densitycur = densities[densities.size() - 2 + off];
 
         #pragma omp parallel for
-        for (size_t k = 0; k < L * L; k++) {
-          int y = k / L; // Row
-          int x = k % L; // Col
+        for (size_t current = 0; current < L * L; current++) {
+          int y = current / L; // Row
+          int x = current % L; // Col
 
           for (int i = -1; i <= 1; i++) // Row
           {
@@ -122,15 +142,15 @@ void AbstractSpatialGame::calculate_scores(std::vector<double> &scores) {
               {
               size_t memberIndex = (x + i + L) % L + L * ((y + j + L) % L);
               if ((i == 0) && (j == 0)) {
-                  scores[offset + k] += lam * densitycur + mu * density;
+                  scores[offset + current] += lam * densitycur + mu * density;
               } else {
-                  scores[offset + k] += field[offset + memberIndex]; // == 0 ? 1 : 0;
+                  scores[offset + current] += field[offset + memberIndex]; // == 0 ? 1 : 0;
               }
               }
           }
 
-          if (field[offset + k] == 0) {
-              scores[offset + k] = scores[offset + k] * (b1 * (1 - off) + b2 * off);
+          if (field[offset + current] == 0) {
+              scores[offset + current] = scores[offset + current] * (b1 * (1 - off) + b2 * off);
           }
         }
     }
@@ -148,11 +168,15 @@ void AbstractSpatialGame::update_field(const std::vector<double> &scores,
     offset = L * L * off;
 
     #pragma omp parallel for
-    for (size_t k = 0; k < L * L; k++) {
-      int y = k / L; // Row
-      int x = k % L; // Col
-
-      size_t bestStrategyIndex = k;
+    for (size_t current = 0; current < L * L; current++) {
+      // Highest score of defector and cooperator
+      double highest_score[] = {-1., -1.};
+      int current_strategy, opposite_strategy;
+      double score_diff, W;
+      bool changed = false;
+      
+      int y = current / L; // Row
+      int x = current % L; // Col
 
       for (int i = -1; i <= 1; i++) // Row
       {
@@ -160,17 +184,32 @@ void AbstractSpatialGame::update_field(const std::vector<double> &scores,
         {
           size_t memberIndex = (x + i + L) % L + L * ((y + j + L) % L);
 
-          if (scores[offset + bestStrategyIndex] <
-              scores[offset + memberIndex]) {
-            bestStrategyIndex = memberIndex;
+          if (highest_score[(int)currentField[offset + memberIndex]] < scores[offset + memberIndex]) {
+            highest_score[(int)currentField[offset + memberIndex]] = scores[offset + memberIndex];
           }
         }
       }
-      if ((perCalFrom >= 0) && (time_moment > perCalFrom) &&
-          (time_moment < perCalTill) && (k != bestStrategyIndex)) {
-        unchanged[offset + k] = 0;
+      current_strategy = currentField[offset + current];
+      opposite_strategy = ((int)currentField[offset + current] == 1) ? 0 : 1;
+
+      score_diff = highest_score[current_strategy] - highest_score[opposite_strategy];
+      if (K != 0) {
+        W = 1 / (1 + std::exp(score_diff / K));
+        if (random() <= W) {
+          changed = true;
+        }
+      } else {
+        if (score_diff < 0) {
+          changed = true;
+        }
       }
-      field[offset + k] = currentField[offset + bestStrategyIndex];
+      if (changed) {
+        field[offset + current] = opposite_strategy;
+        if ((perCalFrom >= 0) && (time_moment > perCalFrom) &&
+          (time_moment < perCalTill)) {
+            unchanged[offset + current] = 0;
+          }
+      }
     }
   }
   currentField.clear();

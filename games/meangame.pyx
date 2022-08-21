@@ -12,8 +12,8 @@ cdef class TwoFieldSpatialGame:
         AbstractSpatialGame *c_game;
         cdef int _L, percfrom, perctill
 
-    def __cinit__(self, int L, double b1, double b2, double lam, double mu, int percfrom=-1, perctill=-1):
-        self.c_game = new AbstractSpatialGame(L, b1, b2, lam, mu)
+    def __cinit__(self, int L, double b1, double b2, double lam, double mu, int percfrom=-1, perctill=-1, double K = 0, int seed = 42):
+        self.c_game = new AbstractSpatialGame(L, b1, b2, lam, mu, K, seed)
         self._L = L
         self.percfrom = percfrom;
         self.perctill = perctill;
@@ -25,6 +25,16 @@ cdef class TwoFieldSpatialGame:
     def L(self):
         """"Return linear size of the field"""
         return self.c_game.size()
+    
+    @property
+    def K(self):
+        """ Return the measure of stochastic uncertainties (noise) """
+        return self.c_game.get_K()
+    
+    @K.setter
+    def K(self, new_K):
+        """ Set measure of stochastic uncertainties """
+        self.c_game.set_K(new_K)
 
     @property
     def field(self):
