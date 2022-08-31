@@ -43,6 +43,8 @@ game = GamePy(
     config["parameters"]["mu"],
     config["measures"]["persistence"]["start"],
     config["measures"]["persistence"]["end"],
+    config["parameters"]["K"],
+    config["parameters"]["seed"]
 )
 
 persistence = np.zeros(persistence_shape)

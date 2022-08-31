@@ -28,8 +28,10 @@ def configure_workflow(config_file: str, def_override: bool = False):
 
     config["parameters"]["lam"] = config["parameters"].get("lam", 1)
     config["parameters"]["mu"] = config["parameters"].get("mu", 0)
+    config["parameters"]["K"] = config["parameters"].get("K", 0)
+    config["parameters"]["seed"] = config["parameters"].get("seed", 0)
 
     with open(os.path.join(path_to_results, "info.json"), "w") as f:
-        json.dump(config, f)
+        json.dump(config, f, indent=4)
 
     return config, path_to_results
