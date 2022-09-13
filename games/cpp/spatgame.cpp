@@ -197,10 +197,14 @@ void AbstractSpatialGame::update_field(const std::vector<double> &scores,
         W = 1 / (1 + std::exp(score_diff / K));
         if (random() <= W) {
           changed = true;
+        } else {
+          changed = false;
         }
       } else {
         if (score_diff < 0) {
           changed = true;
+        } else {
+          changed = false;
         }
       }
       if (changed) {
