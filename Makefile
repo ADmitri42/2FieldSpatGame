@@ -3,5 +3,5 @@ cython:
 	if [ -d "build" ]; then rm -Rf build; fi
 	rm games/meangame.cpp
 
-pytest:
+pytest: spatgames.*.so
 	python3 -m pytest -q ./games/test/

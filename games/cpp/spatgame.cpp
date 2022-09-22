@@ -162,10 +162,18 @@ void AbstractSpatialGame::update_field(const std::vector<double> &scores,
   // Field
   std::vector<char> currentField(field);
 
+  std::vector<double> rand_w(L * L, 0);
+
   // Strategy
   int offset = 0;
   for (int off = 0; off < 2; ++off) {
     offset = L * L * off;
+    if(K != 0) {
+      for (size_t i = 0; i < L * L; i++)
+      {
+        rand_w[i] = random();
+      }
+    }
 
     #pragma omp parallel for
     for (size_t current = 0; current < L * L; current++) {
@@ -195,7 +203,7 @@ void AbstractSpatialGame::update_field(const std::vector<double> &scores,
       score_diff = highest_score[current_strategy] - highest_score[opposite_strategy];
       if (K != 0) {
         W = 1 / (1 + std::exp(score_diff / K));
-        if (random() <= W) {
+        if (rand_w[current] <= W) {
           changed = true;
         } else {
           changed = false;
