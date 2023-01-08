@@ -1,7 +1,7 @@
 cython:
-	export CFLAGS='-I$(shell python3 -c "import numpy;print(numpy.get_include())")' && python3 setup.py build_ext --inplace
+	export CFLAGS='-I$(shell python -c "import numpy;print(numpy.get_include())")' && python setup.py build_ext --inplace
 	if [ -d "build" ]; then rm -Rf build; fi
 	rm games/meangame.cpp
 
 pytest: spatgames.*.so
-	python3 -m pytest -q ./games/test/
+	python -m pytest -q ./games/test/

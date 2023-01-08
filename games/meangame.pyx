@@ -5,7 +5,7 @@ cimport cython
 from libcpp.vector cimport vector
 from numpy cimport import_array, PyArray_SimpleNewFromData, NPY_UINT8, NPY_UINT32, NPY_INT32, npy_intp, NPY_DOUBLE
 
-from CGames cimport AbstractSpatialGame
+from CGames cimport AbstractSpatialGame, TriangularFieldGame
 
 cdef class TwoFieldSpatialGame:
     cdef:
@@ -130,6 +130,13 @@ cdef class TwoFieldSpatialGame:
     def evolve(self, int num_steps = 1):
         self.c_game.evolve(num_steps, self.percfrom, self.perctill)
 
+cdef class TwoTriangularFieldSpatialGame(TwoFieldSpatialGame):
+
+    def __cinit__(self, int L, double b1, double b2, double lam, double mu, int percfrom=-1, perctill=-1, double K = 0, int seed = 42):
+        self.c_game = new TriangularFieldGame(L, b1, b2, lam, mu, K, seed)
+        self._L = L
+        self.percfrom = percfrom;
+        self.perctill = perctill;
 
 
 #################################################################

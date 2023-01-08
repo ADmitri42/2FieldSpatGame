@@ -21,3 +21,7 @@ cdef extern from "cpp/spatgame.h":
         double get_persistence();
         char* get_field_pointer();
         double* get_densities_pointer()
+    
+cdef extern from "cpp/triangular_field_game.h":
+    cdef cppclass TriangularFieldGame(AbstractSpatialGame):
+        TriangularFieldGame(int, double, double, double, double, double, int);

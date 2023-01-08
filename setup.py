@@ -23,6 +23,7 @@ setup(
             [
                 "./games/meangame.pyx",
                 "./games/cpp/spatgame.cpp",
+                "./games/cpp/triangular_field_game.cpp",
             ],
             language="c++",
             include_path=[
