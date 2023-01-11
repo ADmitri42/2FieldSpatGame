@@ -4,7 +4,7 @@ from collections import Counter
 from itertools import product
 
 import numpy as np
-from spatgames import TwoFieldSpatialGame as GamePy
+import spatgames
 from tqdm import tqdm
 
 from configurator import configure_workflow
@@ -25,6 +25,8 @@ parser.set_defaults(overwrite=False)
 
 args = parser.parse_args()
 config, path_to_results = configure_workflow(args.config, args.overwrite)
+
+GamePy = getattr(spatgames, config["GameClass"])
 
 
 bs = list(product(config["parameters"]["b1"], config["parameters"]["b2"]))

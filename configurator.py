@@ -1,5 +1,6 @@
 import os
 import json
+import warnings
 
 
 def configure_workflow(config_file: str, def_override: bool = False):
@@ -7,6 +8,10 @@ def configure_workflow(config_file: str, def_override: bool = False):
         config = json.load(f)
 
     path_to_results = os.path.join(config["results"]["dir"], config["results"]["name"])
+
+    if 'GameClass' not in config:
+        warnings.warn('The game class is not specified. The default value is used.')
+        config['GameClass'] = 'TwoFieldSpatialGame'
 
     try:
         os.makedirs(path_to_results)

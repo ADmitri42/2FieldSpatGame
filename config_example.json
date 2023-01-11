@@ -1,4 +1,5 @@
 {
+  "GameClass": "TwoFieldSpatialGame",
   "parameters": {
     "b1": [0.9, 1.5, 1.9],
     "b2": [0.9, 1.5, 1.9],
@@ -8,10 +9,10 @@
     "seed": 42
   },
   "measures": {
-    "tsteps": 10000,
+    "tsteps": 100,
     "persistence": {
-      "start": 15000,
-      "end": 16000
+      "start": 150,
+      "end": 160
     }
   },
   "results": {
